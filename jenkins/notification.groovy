@@ -10,12 +10,7 @@ public class ColorCode {
     static String FAIL = '#FF0000'
 }
 
-//public enum BuildStatusCode {
-//    SUCCESS,
-//    FAIL
-//}
-
-def notifyBuild(boolean buildSuccess) {
+def notifyBuild(Config config, boolean buildSuccess) {
     setBuildColor(buildSuccess)
     // Send notifications
     String buildMessage = buildSuccess ? "SUCCESS" : "FAIL"
@@ -31,17 +26,17 @@ def getNotificationColor(boolean buildSuccess) {
     return buildSuccess ? ColorCode.SUCCESS : ColorCode.FAIL
 }
 
-def sendSlack(String colorCode, String statusString) {
+def sendSlack(Config config, String colorCode, String statusString) {
     def summary = "${buildNotificationSubject(statusString)} (${env.BUILD_URL})"
 
-    for(channel in Config.slackChannels) {
-        slackSend channel: channel, color: colorCode, message: summary, teamDomain: Config.slackTeam, token: Config.slackToken
+    for(channel in config.slackChannels) {
+        slackSend channel: channel, color: colorCode, message: summary, teamDomain: config.slackTeam, token: config.slackToken
     }
 }
 
-def sendEmail(String statusString) {
-    if(Config.emailRecipients.size() > 0) {
-        String recipients = Config.emailRecipients.join(",");
+def sendEmail(Config config, String statusString) {
+    if(config.emailRecipients.size() > 0) {
+        String recipients = config.emailRecipients.join(",");
         emailext (
                 subject: buildNotificationSubject(statusString),
                 body: buildEmailBody(statusString),
