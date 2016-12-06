@@ -1,9 +1,3 @@
-//public class Config {
-//    static List<String> emailRecipients = []
-//    static List<String> slackChannels = []
-//    static String slackTeam = ''
-//    static String slackToken = ''
-//}
 
 public class ColorCode {
     static String SUCCESS = '#00FF00'
@@ -52,10 +46,6 @@ def buildEmailBody(String statusString) {
 
 def buildNotificationSubject(String statusString) {
     return "${statusString}: ${env.JOB_NAME} [${env.BUILD_NUMBER}]"
-}
-
-def testLoad() {
-    System.out.println("Test Load success")
 }
 
 return this
