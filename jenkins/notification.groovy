@@ -10,24 +10,25 @@ public class ColorCode {
     static String FAIL = '#FF0000'
 }
 
-public enum BuildStatusCode {
-    SUCCESS,
-    FAIL
-}
+//public enum BuildStatusCode {
+//    SUCCESS,
+//    FAIL
+//}
 
-def notifyBuild(BuildStatusCode buildStatus = BuildStatusCode.FAIL) {
-    setBuildColor(buildStatus)
+def notifyBuild(boolean buildSuccess) {
+    setBuildColor(buildSuccess)
     // Send notifications
-    sendSlack(getNotificationColor(buildStatus), buildStatus.toString())
-    sendEmail(buildStatus.toString())
+    String buildMessage = buildSuccess ? "SUCCESS" : "FAIL"
+    sendSlack(getNotificationColor(buildSuccess), buildMessage)
+    sendEmail(buildMessage)
 }
 
-def setBuildColor(BuildStatusCode statusCode) {
-    color = statusCode.equals(BuildStatusCode.SUCCESS) ? 'GREEN' : 'RED'
+def setBuildColor(boolean buildSuccess) {
+    color = buildSuccess ? 'GREEN' : 'RED'
 }
 
-def getNotificationColor(BuildStatusCode statusCode) {
-    return statusCode.equals(BuildStatusCode.SUCCESS) ? ColorCode.SUCCESS : ColorCode.FAIL
+def getNotificationColor(boolean buildSuccess) {
+    return buildSuccess ? ColorCode.SUCCESS : ColorCode.FAIL
 }
 
 def sendSlack(String colorCode, String statusString) {
