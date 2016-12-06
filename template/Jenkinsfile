@@ -1,0 +1,40 @@
+#!groovy
+import org.omg.PortableInterceptor.SUCCESSFUL
+
+node {
+ try {
+  stage 'Load jenkins config'
+  loadLibraries()
+
+  stage 'Build and Test'
+  checkout scm
+  def mvnHome = tool 'Maven'
+  bat "${mvnHome}\\bin\\mvn -B verify"
+  notify(true)
+
+ } catch (e) {
+  notify(false)
+  throw e
+ }
+}
+
+class Config {
+ static List<String> emailRecipients = ["johnsmith@sample.com"]
+ static List<String> slackChannels = ["#jenkins"]
+ static String slackTeam = 'ulineinc'
+ static String slackToken = 'abcd123xyz'
+}
+
+class Libraries {
+ static def notification
+}
+
+def notify(boolean success) {
+ Libraries.notification.notifyBuild(Config.emailRecipients, Config.slackTeam, Config.slackToken, Config.slackChannels, success)
+}
+
+def loadLibraries() {
+ fileLoader.withGit(Config.jenkinsSharedRepo, 'master', null, '') {
+  Libraries.notification = fileLoader.load('script/notification');
+ }
+}
