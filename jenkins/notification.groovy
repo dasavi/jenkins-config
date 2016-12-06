@@ -1,22 +1,21 @@
-class Config {
-    String jenkinsConfigRepo = ""
-    List<String> emailRecipients = []
-    List<String> slackChannels = []
-    String slackTeam = ''
-    String slackToken = ''
-}
+//public class Config {
+//    static List<String> emailRecipients = []
+//    static List<String> slackChannels = []
+//    static String slackTeam = ''
+//    static String slackToken = ''
+//}
 
-class ColorCode {
+public class ColorCode {
     static String SUCCESS = '#00FF00'
     static String FAIL = '#FF0000'
 }
 
-def notifyBuild(Config config, boolean buildSuccess) {
+def notifyBuild(List<String> emailRecipients, String slackTeam, String slackToken, List<String> slackChannels, boolean buildSuccess) {
     setBuildColor(buildSuccess)
     // Send notifications
     String buildMessage = buildSuccess ? "SUCCESS" : "FAIL"
-    sendSlack(config.slackTeam, config.slackToken, config.slackChannels, getNotificationColor(buildSuccess), buildMessage)
-    sendEmail(config.emailRecipients, buildMessage)
+    sendSlack(slackTeam, slackToken, slackChannels, getNotificationColor(buildSuccess), buildMessage)
+    sendEmail(emailRecipients, buildMessage)
 }
 
 def setBuildColor(boolean buildSuccess) {
@@ -55,8 +54,8 @@ def buildNotificationSubject(String statusString) {
     return "${statusString}: ${env.JOB_NAME} [${env.BUILD_NUMBER}]"
 }
 
-def getConfig() {
-    return new Config();
+def testLoad() {
+    System.out.println("Test Load success")
 }
 
 return this
